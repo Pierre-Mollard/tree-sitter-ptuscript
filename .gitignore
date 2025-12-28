@@ -1,0 +1,10 @@
+# Depedencies
+node_modules/
+npm-debug.log*
+
+# Build artifacts
+parser/
+build/
+*.so
+*.dylib
+*.dll
