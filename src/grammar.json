@@ -2,9 +2,55 @@
   "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "ptuscript",
   "rules": {
-    "source_file": {
-      "type": "STRING",
-      "value": "hello"
+    "program": {
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "statement"
+      }
+    },
+    "statement": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "comment_instruction"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "unknown_text"
+        }
+      ]
+    },
+    "comment_instruction": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "COMMENT"
+        },
+        {
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "COMMENT"
+            },
+            {
+              "type": "SYMBOL",
+              "name": "comment_text"
+            }
+          ]
+        }
+      ]
+    },
+    "comment_text": {
+      "type": "PATTERN",
+      "value": "[^\\r\\n]+"
+    },
+    "unknown_text": {
+      "type": "PATTERN",
+      "value": ".+"
     }
   },
   "extras": [

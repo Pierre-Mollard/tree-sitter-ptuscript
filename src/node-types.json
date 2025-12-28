@@ -1,12 +1,64 @@
 [
   {
-    "type": "source_file",
+    "type": "comment_instruction",
     "named": true,
-    "root": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "comment_text",
+          "named": true
+        }
+      ]
+    }
   },
   {
-    "type": "hello",
+    "type": "program",
+    "named": true,
+    "root": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "statement",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "comment_instruction",
+          "named": true
+        },
+        {
+          "type": "unknown_text",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "COMMENT",
     "named": false
+  },
+  {
+    "type": "comment_text",
+    "named": true
+  },
+  {
+    "type": "unknown_text",
+    "named": true
   }
 ]
