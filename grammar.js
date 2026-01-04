@@ -38,10 +38,17 @@ module.exports = grammar({
       $.format_instruction,
       $.header_block,
       $.ifelse_instruction,
+      $.simul_instruction,
       $.include_instruction,
+      $.init_block,
+      $.next_test_block,
+      $.service_block,
+      $.simul_instruction,
+      $.stub_instruction,
+      $.termination_block,
       $.test_block,
+      $.use_block,
       $.other_comment_instruction,
-      $.test_block,
     ),
 
     // BEGIN
@@ -63,6 +70,7 @@ module.exports = grammar({
         $.native_code,
         $.comment_instruction,
         $.ifelse_instruction,
+        $.simul_instruction,
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('DEFINE'), 'DEFINE'),
@@ -79,7 +87,9 @@ module.exports = grammar({
         $.str_instruction,
         $.stub_instruction,
         $.ifelse_instruction,
-        $.identifier
+        $.simul_instruction,
+        $.use_block,
+        $.identifier,
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('ELEMENT'), 'ELEMENT'),
@@ -104,6 +114,7 @@ module.exports = grammar({
         $.stub_instruction,
         $.format_instruction,
         $.ifelse_instruction,
+        $.simul_instruction,
         $.identifier
       )),
       alias(caseInsensitive('END'), 'END'),
@@ -164,35 +175,114 @@ module.exports = grammar({
       field('path', $.path_value), // file
     ),
 
-    // TODO: INIT
-    // TODO: NEXT_TEST
-    // TODO: SERVICE
+    // INIT BLOCK
+    init_block: $ => seq(
+      alias(caseInsensitive('INITIALIZATION'), 'INITIALIZATION'),
+      repeat(choice(
+        $.native_code,
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('INITIALIZATION'), 'INITIALIZATION'),
+    ),
 
+    // NEXT_TEST
+    next_test_block: $ => seq(
+      alias(caseInsensitive('NEXT_TEST'), 'NEXT_TEST'),
+      optional(seq(
+        alias(caseInsensitive('LOOP'), 'LOOP'),
+        field('nb', alias(/[^\r\n]+/, $.number_expression)), // integer expression can be C code
+      )),
+    ),
+
+    // SERVICE BLOCK
     service_block: $ => seq(
-       'SERVICE', 
-       repeat(choice(
-         $.comment_instruction, // <-- allowed here
+      alias(caseInsensitive('SERVICE'), 'SERVICE'),
+      field('service_name', $.identifier), // service_name
+      repeat(choice(
+        $.test_block,
+        $.environment_block,
+        $.comment_instruction,
+        $.native_code,
         $.ifelse_instruction,
-       )),
-       'END', 'SERVICE'
+        $.simul_instruction,
+        $.var_instruction,
+        $.array_instruction,
+        $.str_instruction,
+        $.use_block,
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('SERVICE'), 'SERVICE'),
     ),
-    // TODO: SIMUL
-    // TODO: STUB
-    stub_instruction: $ => alias(caseInsensitive('STUB'), 'STUB'),
-    // TODO: TERMINATION
-    // TODO: TEST
 
-    test_block: $ => seq(
-       'TEST', 
-       repeat(choice(
-         $.element_block,
-         $.family_instruction,
-        $.ifelse_instruction,
-         $.comment_instruction // <-- allowed here
-       )),
-       'END', 'TEST'
+    // SIMUL BLOCK
+    simul_instruction: $ => seq(
+      alias(caseInsensitive('SIMUL'), 'SIMUL'),
+      field('consequence', alias(repeat($._definition), $.block)),
+      optional(seq(
+        alias(caseInsensitive('ELSE_SIMUL'), 'ELSE_SIMUL'),
+        field('alternative', alias(repeat($._definition), $.block))
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('SIMUL'), 'SIMUL'),
     ),
-    // TODO: USE
+
+    // STUB (simple)
+    stub_instruction: $ => seq(
+      alias(caseInsensitive('STUB'), 'STUB'),
+      field('function', seq(
+         optional(seq(field('stub_name', $.identifier), '.')),
+         field('function_name', $.identifier)
+      )),
+      field('calls', alias(/[^\r\n]*/, $.rest_of_line)), // calls
+    ),
+
+    // TERMINATION BLOCK
+    termination_block: $ => seq(
+      alias(caseInsensitive('TERMINATION'), 'TERMINATION'),
+      repeat(choice(
+        $.native_code,
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('TERMINATION'), 'TERMINATION'),
+    ),
+
+    // TEST BLOCK
+    test_block: $ => seq(
+      alias(caseInsensitive('TEST'), 'TEST'),
+      field('test_name', $.identifier), // test name
+      optional(seq(
+        alias(caseInsensitive('LOOP'), 'LOOP'),
+        field('nb', alias(/[^\r\n]+/, $.number_expression)), // integer expression can be C code
+      )),
+      repeat(choice(
+        $.element_block,
+        $.family_instruction,
+        $.next_test_block,
+        $.ifelse_instruction,
+        $.simul_instruction,
+        $.comment_instruction,
+        $.var_instruction,
+        $.array_instruction,
+        $.str_instruction,
+        $.native_code,
+        $.use_block,
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('TEST'), 'TEST'),
+    ),
+
+    // USE
+    use_block: $ => seq(
+      alias(caseInsensitive('USE'), 'USE'),
+      field('name', $.identifier),
+      optional(seq(
+        '(',
+        field('expression', $.identifier),
+        repeat(seq(',', field('expression', $.identifier))),
+        ')'
+      )),
+    ),
+
     // TODO: VAR ARRAY STR
     
     var_instruction: $ => alias(caseInsensitive('VAR'), 'VAR'),
@@ -206,7 +296,10 @@ module.exports = grammar({
     ),
 
     native_code: $ => seq(
-      '#',
+      choice(
+        '#',
+        '@'
+      ),
       optional($.rest_of_line)
     ),
 

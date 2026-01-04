@@ -58,7 +58,15 @@
           "named": true
         },
         {
+          "type": "init_block",
+          "named": true
+        },
+        {
           "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "next_test_block",
           "named": true
         },
         {
@@ -66,7 +74,27 @@
           "named": true
         },
         {
+          "type": "service_block",
+          "named": true
+        },
+        {
+          "type": "simul_instruction",
+          "named": true
+        },
+        {
+          "type": "stub_instruction",
+          "named": true
+        },
+        {
+          "type": "termination_block",
+          "named": true
+        },
+        {
           "type": "test_block",
+          "named": true
+        },
+        {
+          "type": "use_block",
           "named": true
         }
       ]
@@ -128,6 +156,10 @@
         {
           "type": "native_code",
           "named": true
+        },
+        {
+          "type": "simul_instruction",
+          "named": true
         }
       ]
     }
@@ -161,11 +193,19 @@
           "named": true
         },
         {
+          "type": "simul_instruction",
+          "named": true
+        },
+        {
           "type": "str_instruction",
           "named": true
         },
         {
           "type": "stub_instruction",
+          "named": true
+        },
+        {
+          "type": "use_block",
           "named": true
         },
         {
@@ -226,6 +266,10 @@
         },
         {
           "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "simul_instruction",
           "named": true
         },
         {
@@ -374,6 +418,21 @@
     }
   },
   {
+    "type": "init_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "native_code",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "native_code",
     "named": true,
     "fields": {},
@@ -386,6 +445,22 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "next_test_block",
+    "named": true,
+    "fields": {
+      "nb": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number_expression",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -423,6 +498,94 @@
     "type": "rest_of_line",
     "named": true,
     "fields": {}
+  },
+  {
+    "type": "service_block",
+    "named": true,
+    "fields": {
+      "service_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "array_instruction",
+          "named": true
+        },
+        {
+          "type": "comment_instruction",
+          "named": true
+        },
+        {
+          "type": "environment_block",
+          "named": true
+        },
+        {
+          "type": "ifelse_instruction",
+          "named": true
+        },
+        {
+          "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "simul_instruction",
+          "named": true
+        },
+        {
+          "type": "str_instruction",
+          "named": true
+        },
+        {
+          "type": "test_block",
+          "named": true
+        },
+        {
+          "type": "use_block",
+          "named": true
+        },
+        {
+          "type": "var_instruction",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "simul_instruction",
+    "named": true,
+    "fields": {
+      "alternative": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          }
+        ]
+      },
+      "consequence": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "source_file",
@@ -474,7 +637,15 @@
           "named": true
         },
         {
+          "type": "init_block",
+          "named": true
+        },
+        {
           "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "next_test_block",
           "named": true
         },
         {
@@ -482,7 +653,27 @@
           "named": true
         },
         {
+          "type": "service_block",
+          "named": true
+        },
+        {
+          "type": "simul_instruction",
+          "named": true
+        },
+        {
+          "type": "stub_instruction",
+          "named": true
+        },
+        {
+          "type": "termination_block",
+          "named": true
+        },
+        {
           "type": "test_block",
+          "named": true
+        },
+        {
+          "type": "use_block",
           "named": true
         }
       ]
@@ -496,16 +687,97 @@
   {
     "type": "stub_instruction",
     "named": true,
-    "fields": {}
+    "fields": {
+      "calls": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "rest_of_line",
+            "named": true
+          }
+        ]
+      },
+      "function": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          }
+        ]
+      },
+      "function_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "stub_name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
-    "type": "test_block",
+    "type": "termination_block",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
       "required": false,
       "types": [
+        {
+          "type": "native_code",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "test_block",
+    "named": true,
+    "fields": {
+      "nb": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number_expression",
+            "named": true
+          }
+        ]
+      },
+      "test_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "array_instruction",
+          "named": true
+        },
         {
           "type": "comment_instruction",
           "named": true
@@ -521,8 +793,58 @@
         {
           "type": "ifelse_instruction",
           "named": true
+        },
+        {
+          "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "next_test_block",
+          "named": true
+        },
+        {
+          "type": "simul_instruction",
+          "named": true
+        },
+        {
+          "type": "str_instruction",
+          "named": true
+        },
+        {
+          "type": "use_block",
+          "named": true
+        },
+        {
+          "type": "var_instruction",
+          "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "use_block",
+    "named": true,
+    "fields": {
+      "expression": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -555,7 +877,15 @@
     "named": false
   },
   {
+    "type": ".",
+    "named": false
+  },
+  {
     "type": "=",
+    "named": false
+  },
+  {
+    "type": "@",
     "named": false
   },
   {
@@ -587,6 +917,10 @@
     "named": false
   },
   {
+    "type": "ELSE_SIMUL",
+    "named": false
+  },
+  {
     "type": "END",
     "named": false
   },
@@ -615,7 +949,27 @@
     "named": false
   },
   {
+    "type": "INITIALIZATION",
+    "named": false
+  },
+  {
+    "type": "LOOP",
+    "named": false
+  },
+  {
+    "type": "NEXT_TEST",
+    "named": false
+  },
+  {
     "type": "PTU",
+    "named": false
+  },
+  {
+    "type": "SERVICE",
+    "named": false
+  },
+  {
+    "type": "SIMUL",
     "named": false
   },
   {
@@ -627,7 +981,15 @@
     "named": false
   },
   {
+    "type": "TERMINATION",
+    "named": false
+  },
+  {
     "type": "TEST",
+    "named": false
+  },
+  {
+    "type": "USE",
     "named": false
   },
   {
@@ -640,6 +1002,10 @@
   },
   {
     "type": "number",
+    "named": true
+  },
+  {
+    "type": "number_expression",
     "named": true
   },
   {
