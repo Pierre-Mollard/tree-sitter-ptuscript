@@ -33,9 +33,14 @@ module.exports = grammar({
       $.comment_instruction,
       $.define_stub_block,
       $.element_block,
+      $.environment_block,
+      $.family_instruction,
+      $.format_instruction,
+      $.header_block,
+      $.ifelse_instruction,
+      $.include_instruction,
       $.test_block,
       $.other_comment_instruction,
-      $.header_block,
       $.test_block,
     ),
 
@@ -57,6 +62,7 @@ module.exports = grammar({
       repeat(choice(
         $.native_code,
         $.comment_instruction,
+        $.ifelse_instruction,
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('DEFINE'), 'DEFINE'),
@@ -72,16 +78,55 @@ module.exports = grammar({
         $.array_instruction,
         $.str_instruction,
         $.stub_instruction,
+        $.ifelse_instruction,
         $.identifier
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('ELEMENT'), 'ELEMENT'),
     ),
 
-    // TODO: ENVIRONMENT
-    // TODO: FAMILY
-    // TODO: FORMAT
-    
+    // ENVIRONMENT BLOCK
+    environment_block: $ => seq(
+      alias(caseInsensitive('ENVIRONMENT'), 'ENVIRONMENT'),
+      field('name', $.identifier),
+      optional(seq(
+        '(',
+        field('parameter', $.identifier),
+        repeat(seq(',', field('parameter', $.identifier))),
+        ')'
+      )),
+      repeat(choice(
+        $.native_code,
+        $.comment_instruction,
+        $.var_instruction,
+        $.array_instruction,
+        $.str_instruction,
+        $.stub_instruction,
+        $.format_instruction,
+        $.ifelse_instruction,
+        $.identifier
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('ENVIRONMENT'), 'ENVIRONMENT'),
+    ),
+
+    // FAMILY
+    family_instruction: $ => seq(
+      alias(caseInsensitive('FAMILY'), 'FAMILY'),
+      field('family_name', $.identifier), // family_name
+      optional(seq(
+        repeat(seq(',', field('family_name', $.identifier))),
+      )),
+    ),
+
+    // FORMAT
+    format_instruction: $ => seq(
+      alias(caseInsensitive('FORMAT'), 'FORMAT'),
+      field('field', $.identifier), // variable, type or field
+      '=',
+      field('format', alias(/[^\r\n]*/, $.rest_of_line)), // format
+    ),
+
     // HEADER
     header_block: $ => seq(
       alias(caseInsensitive('HEADER'), 'HEADER'),
@@ -96,8 +141,29 @@ module.exports = grammar({
       )
     ),
 
-    // TODO: IF ELSE
-    // TODO: INCLUDE
+    // IF ELSE BLOCK
+    ifelse_instruction: $ => seq(
+      alias(caseInsensitive('IF'), 'IF'),
+      field('condition', alias(/[^\r\n]+/, $.until_new_line)), // C code so anything goes
+      field('consequence', alias(repeat($._definition), $.block)),
+      optional(seq(
+        alias(caseInsensitive('ELSE'), 'ELSE'),
+        field('alternative', alias(repeat($._definition), $.block))
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('IF'), 'IF'),
+    ),
+
+    // INCLUDE
+    include_instruction: $ => seq(
+      alias(caseInsensitive('INCLUDE'), 'INCLUDE'),
+      optional(choice(
+        alias(caseInsensitive('CODE'), 'CODE'),
+        alias(caseInsensitive('PTU'), 'PTU'),
+      )),
+      field('path', $.path_value), // file
+    ),
+
     // TODO: INIT
     // TODO: NEXT_TEST
     // TODO: SERVICE
@@ -105,7 +171,8 @@ module.exports = grammar({
     service_block: $ => seq(
        'SERVICE', 
        repeat(choice(
-         $.comment_instruction // <-- allowed here
+         $.comment_instruction, // <-- allowed here
+        $.ifelse_instruction,
        )),
        'END', 'SERVICE'
     ),
@@ -119,6 +186,8 @@ module.exports = grammar({
        'TEST', 
        repeat(choice(
          $.element_block,
+         $.family_instruction,
+        $.ifelse_instruction,
          $.comment_instruction // <-- allowed here
        )),
        'END', 'TEST'
@@ -136,18 +205,31 @@ module.exports = grammar({
         field('text', $.rest_of_line)
     ),
 
-
     native_code: $ => seq(
       '#',
       optional($.rest_of_line)
     ),
 
     rest_of_line: $ => /[^\r\n]*/,
+    until_new_line: $ => /[^\r\n]+/,
+
+    // String literal
+    string: $ => token(seq(
+      '"',
+      repeat(choice(
+        /[^"\\\n]+/,        // Match non-quote, non-backslash, non-newline
+        /\\./               // Match escaped characters like \" or \n
+      )),
+      '"'
+    )),
 
     // C Test Script language identifier (check the doc)
     identifier: $ => /[a-zA-Z0-9_]+/,
     number: $ => /\d+/,
-    
+    path_value: $ => choice(
+      $.string,
+      token(/[a-zA-Z0-9_./\\]+/),
+    ),
     
   }
 });
