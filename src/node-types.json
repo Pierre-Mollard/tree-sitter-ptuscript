@@ -41,10 +41,6 @@
         {
           "type": "comment_instruction",
           "named": true
-        },
-        {
-          "type": "unknown_text",
-          "named": true
         }
       ]
     }
@@ -55,10 +51,6 @@
   },
   {
     "type": "comment_text",
-    "named": true
-  },
-  {
-    "type": "unknown_text",
     "named": true
   }
 ]

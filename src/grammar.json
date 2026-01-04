@@ -15,30 +15,25 @@
         {
           "type": "SYMBOL",
           "name": "comment_instruction"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "unknown_text"
         }
       ]
     },
     "comment_instruction": {
-      "type": "CHOICE",
+      "type": "SEQ",
       "members": [
         {
           "type": "STRING",
           "value": "COMMENT"
         },
         {
-          "type": "SEQ",
+          "type": "CHOICE",
           "members": [
-            {
-              "type": "STRING",
-              "value": "COMMENT"
-            },
             {
               "type": "SYMBOL",
               "name": "comment_text"
+            },
+            {
+              "type": "BLANK"
             }
           ]
         }
@@ -47,10 +42,6 @@
     "comment_text": {
       "type": "PATTERN",
       "value": "[^\\r\\n]+"
-    },
-    "unknown_text": {
-      "type": "PATTERN",
-      "value": ".+"
     }
   },
   "extras": [

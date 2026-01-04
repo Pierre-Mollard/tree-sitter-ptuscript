@@ -11,19 +11,18 @@ module.exports = grammar({
   name: "ptuscript",
 
   rules: {
+
     program: $ => repeat($.statement),
+   
     statement: $ => choice(
       $.comment_instruction,
-      $.unknown_text
     ),
 
-    comment_instruction: $ => choice(
+    comment_instruction: $ => seq(
         'COMMENT',
-        seq('COMMENT', $.comment_text)
+        optional($.comment_text)
     ),
     comment_text: $ => /[^\r\n]+/,
-
-    unknown_text: $ => /.+/, // catch anything else
     
   }
 });

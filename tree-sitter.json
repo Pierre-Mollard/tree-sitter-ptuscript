@@ -7,7 +7,7 @@
       "title": "PTUScript",
       "scope": "source.ptuscript",
       "file-types": [
-        "ptuscript"
+        "ptu"
       ],
       "injection-regex": "^ptuscript$",
       "class-name": "TreeSitterPtuscript"
