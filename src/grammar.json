@@ -1,36 +1,155 @@
 {
   "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
   "name": "ptuscript",
+  "word": "identifier",
   "rules": {
-    "program": {
+    "source_file": {
       "type": "REPEAT",
       "content": {
         "type": "SYMBOL",
-        "name": "statement"
+        "name": "_definition"
       }
     },
-    "statement": {
+    "_definition": {
       "type": "CHOICE",
       "members": [
         {
           "type": "SYMBOL",
+          "name": "native_code"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "begin_instruction"
+        },
+        {
+          "type": "SYMBOL",
           "name": "comment_instruction"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "other_comment_instruction"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "header_block"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "test_block"
         }
       ]
+    },
+    "begin_instruction": {
+      "type": "ALIAS",
+      "content": {
+        "type": "PATTERN",
+        "value": "[bB][eE][gG][iI][nN]"
+      },
+      "named": false,
+      "value": "BEGIN"
     },
     "comment_instruction": {
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[cC][oO][mM][mM][eE][nN][tT]"
+          },
+          "named": false,
           "value": "COMMENT"
+        },
+        {
+          "type": "FIELD",
+          "name": "text",
+          "content": {
+            "type": "SYMBOL",
+            "name": "rest_of_line"
+          }
+        }
+      ]
+    },
+    "element_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "ELEMENT"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "comment_instruction"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "END"
+        },
+        {
+          "type": "STRING",
+          "value": "ELEMENT"
+        }
+      ]
+    },
+    "header_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[hH][eE][aA][dD][eE][rR]"
+          },
+          "named": false,
+          "value": "HEADER"
         },
         {
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "comment_text"
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "FIELD",
+                  "name": "module_name",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": ","
+                },
+                {
+                  "type": "FIELD",
+                  "name": "module_version",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                },
+                {
+                  "type": "STRING",
+                  "value": ","
+                },
+                {
+                  "type": "FIELD",
+                  "name": "test_plan_version",
+                  "content": {
+                    "type": "SYMBOL",
+                    "name": "identifier"
+                  }
+                }
+              ]
             },
             {
               "type": "BLANK"
@@ -39,9 +158,122 @@
         }
       ]
     },
-    "comment_text": {
+    "service_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "SERVICE"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "comment_instruction"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "END"
+        },
+        {
+          "type": "STRING",
+          "value": "SERVICE"
+        }
+      ]
+    },
+    "test_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "TEST"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "comment_instruction"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "END"
+        },
+        {
+          "type": "STRING",
+          "value": "TEST"
+        }
+      ]
+    },
+    "other_comment_instruction": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "STRING",
+              "value": "--"
+            },
+            {
+              "type": "STRING",
+              "value": "++"
+            }
+          ]
+        },
+        {
+          "type": "FIELD",
+          "name": "text",
+          "content": {
+            "type": "SYMBOL",
+            "name": "rest_of_line"
+          }
+        }
+      ]
+    },
+    "native_code": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "#"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "rest_of_line"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
+    },
+    "rest_of_line": {
       "type": "PATTERN",
-      "value": "[^\\r\\n]+"
+      "value": "[^\\r\\n]*"
+    },
+    "identifier": {
+      "type": "PATTERN",
+      "value": "[a-zA-Z0-9_]+"
+    },
+    "number": {
+      "type": "PATTERN",
+      "value": "\\d+"
     }
   },
   "extras": [
