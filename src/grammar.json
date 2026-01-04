@@ -27,6 +27,18 @@
         },
         {
           "type": "SYMBOL",
+          "name": "define_stub_block"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "element_block"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "test_block"
+        },
+        {
+          "type": "SYMBOL",
           "name": "other_comment_instruction"
         },
         {
@@ -70,11 +82,102 @@
         }
       ]
     },
+    "define_stub_block": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[dD][eE][fF][iI][nN][eE]"
+          },
+          "named": false,
+          "value": "DEFINE"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[sS][tT][uU][bB]"
+          },
+          "named": false,
+          "value": "STUB"
+        },
+        {
+          "type": "FIELD",
+          "name": "stub_name",
+          "content": {
+            "type": "SYMBOL",
+            "name": "identifier"
+          }
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "stub_dim",
+              "content": {
+                "type": "ALIAS",
+                "content": {
+                  "type": "PATTERN",
+                  "value": "\\d+"
+                },
+                "named": true,
+                "value": "number"
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "native_code"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "comment_instruction"
+              }
+            ]
+          }
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[eE][nN][dD]"
+          },
+          "named": false,
+          "value": "END"
+        },
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[dD][eE][fF][iI][nN][eE]"
+          },
+          "named": false,
+          "value": "DEFINE"
+        }
+      ]
+    },
     "element_block": {
       "type": "SEQ",
       "members": [
         {
-          "type": "STRING",
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[eE][lL][eE][mM][eE][nN][tT]"
+          },
+          "named": false,
           "value": "ELEMENT"
         },
         {
@@ -84,17 +187,51 @@
             "members": [
               {
                 "type": "SYMBOL",
+                "name": "native_code"
+              },
+              {
+                "type": "SYMBOL",
                 "name": "comment_instruction"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "var_instruction"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "array_instruction"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "str_instruction"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "stub_instruction"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
               }
             ]
           }
         },
         {
-          "type": "STRING",
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[eE][nN][dD]"
+          },
+          "named": false,
           "value": "END"
         },
         {
-          "type": "STRING",
+          "type": "ALIAS",
+          "content": {
+            "type": "PATTERN",
+            "value": "[eE][lL][eE][mM][eE][nN][tT]"
+          },
+          "named": false,
           "value": "ELEMENT"
         }
       ]
@@ -187,6 +324,15 @@
         }
       ]
     },
+    "stub_instruction": {
+      "type": "ALIAS",
+      "content": {
+        "type": "PATTERN",
+        "value": "[sS][tT][uU][bB]"
+      },
+      "named": false,
+      "value": "STUB"
+    },
     "test_block": {
       "type": "SEQ",
       "members": [
@@ -199,6 +345,10 @@
           "content": {
             "type": "CHOICE",
             "members": [
+              {
+                "type": "SYMBOL",
+                "name": "element_block"
+              },
               {
                 "type": "SYMBOL",
                 "name": "comment_instruction"
@@ -215,6 +365,33 @@
           "value": "TEST"
         }
       ]
+    },
+    "var_instruction": {
+      "type": "ALIAS",
+      "content": {
+        "type": "PATTERN",
+        "value": "[vV][aA][rR]"
+      },
+      "named": false,
+      "value": "VAR"
+    },
+    "array_instruction": {
+      "type": "ALIAS",
+      "content": {
+        "type": "PATTERN",
+        "value": "[aA][rR][rR][aA][yY]"
+      },
+      "named": false,
+      "value": "ARRAY"
+    },
+    "str_instruction": {
+      "type": "ALIAS",
+      "content": {
+        "type": "PATTERN",
+        "value": "[sS][tT][rR]"
+      },
+      "named": false,
+      "value": "STR"
     },
     "other_comment_instruction": {
       "type": "SEQ",

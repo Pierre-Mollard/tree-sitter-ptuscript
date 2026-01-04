@@ -31,6 +31,9 @@ module.exports = grammar({
       $.native_code,
       $.begin_instruction,
       $.comment_instruction,
+      $.define_stub_block,
+      $.element_block,
+      $.test_block,
       $.other_comment_instruction,
       $.header_block,
       $.test_block,
@@ -45,16 +48,34 @@ module.exports = grammar({
         field('text', $.rest_of_line)
     ),
 
+    // DEFINE STUB BLOCK
+    define_stub_block: $ => seq(
+      alias(caseInsensitive('DEFINE'), 'DEFINE'),
+      alias(caseInsensitive('STUB'), 'STUB'),
+      field('stub_name', $.identifier),
+      optional(field('stub_dim', alias(/\d+/, $.number))),
+      repeat(choice(
+        $.native_code,
+        $.comment_instruction,
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('DEFINE'), 'DEFINE'),
+    ),
 
-    // TODO: DEFINE STUB
-    // TODO: ELEMENT
-
+    // ELEMENT BLOCK
     element_block: $ => seq(
-       'ELEMENT', 
-       repeat(choice(
-         $.comment_instruction
-       )),
-       'END', 'ELEMENT'
+      alias(caseInsensitive('ELEMENT'), 'ELEMENT'),
+      repeat(choice(
+        $.native_code,
+        $.comment_instruction,
+        $.var_instruction,
+        $.array_instruction,
+        $.str_instruction,
+        $.stub_instruction,
+        $.identifier
+      )),
+      alias(caseInsensitive('END'), 'END'),
+      alias(caseInsensitive('ELEMENT'), 'ELEMENT'),
     ),
 
     // TODO: ENVIRONMENT
@@ -90,12 +111,14 @@ module.exports = grammar({
     ),
     // TODO: SIMUL
     // TODO: STUB
+    stub_instruction: $ => alias(caseInsensitive('STUB'), 'STUB'),
     // TODO: TERMINATION
     // TODO: TEST
 
     test_block: $ => seq(
        'TEST', 
        repeat(choice(
+         $.element_block,
          $.comment_instruction // <-- allowed here
        )),
        'END', 'TEST'
@@ -103,6 +126,10 @@ module.exports = grammar({
     // TODO: USE
     // TODO: VAR ARRAY STR
     
+    var_instruction: $ => alias(caseInsensitive('VAR'), 'VAR'),
+    array_instruction: $ => alias(caseInsensitive('ARRAY'), 'ARRAY'),
+    str_instruction: $ => alias(caseInsensitive('STR'), 'STR'),
+
           // OTHER COMMENT ?
     other_comment_instruction: $ => seq(
         choice('--', '++'),
@@ -119,7 +146,7 @@ module.exports = grammar({
 
     // C Test Script language identifier (check the doc)
     identifier: $ => /[a-zA-Z0-9_]+/,
-    number: $ => /\d+/
+    number: $ => /\d+/,
     
     
   }

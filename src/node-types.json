@@ -1,5 +1,10 @@
 [
   {
+    "type": "array_instruction",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "begin_instruction",
     "named": true,
     "fields": {}
@@ -18,6 +23,85 @@
           }
         ]
       }
+    }
+  },
+  {
+    "type": "define_stub_block",
+    "named": true,
+    "fields": {
+      "stub_dim": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "number",
+            "named": true
+          }
+        ]
+      },
+      "stub_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "comment_instruction",
+          "named": true
+        },
+        {
+          "type": "native_code",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "element_block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "array_instruction",
+          "named": true
+        },
+        {
+          "type": "comment_instruction",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "str_instruction",
+          "named": true
+        },
+        {
+          "type": "stub_instruction",
+          "named": true
+        },
+        {
+          "type": "var_instruction",
+          "named": true
+        }
+      ]
     }
   },
   {
@@ -105,6 +189,14 @@
           "named": true
         },
         {
+          "type": "define_stub_block",
+          "named": true
+        },
+        {
+          "type": "element_block",
+          "named": true
+        },
+        {
           "type": "header_block",
           "named": true
         },
@@ -124,6 +216,16 @@
     }
   },
   {
+    "type": "str_instruction",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "stub_instruction",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "test_block",
     "named": true,
     "fields": {},
@@ -134,9 +236,18 @@
         {
           "type": "comment_instruction",
           "named": true
+        },
+        {
+          "type": "element_block",
+          "named": true
         }
       ]
     }
+  },
+  {
+    "type": "var_instruction",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "#",
@@ -155,11 +266,23 @@
     "named": false
   },
   {
+    "type": "ARRAY",
+    "named": false
+  },
+  {
     "type": "BEGIN",
     "named": false
   },
   {
     "type": "COMMENT",
+    "named": false
+  },
+  {
+    "type": "DEFINE",
+    "named": false
+  },
+  {
+    "type": "ELEMENT",
     "named": false
   },
   {
@@ -171,11 +294,27 @@
     "named": false
   },
   {
+    "type": "STR",
+    "named": false
+  },
+  {
+    "type": "STUB",
+    "named": false
+  },
+  {
     "type": "TEST",
     "named": false
   },
   {
+    "type": "VAR",
+    "named": false
+  },
+  {
     "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "number",
     "named": true
   },
   {
