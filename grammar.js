@@ -283,11 +283,19 @@ module.exports = grammar({
       )),
     ),
 
-    // TODO: VAR ARRAY STR
-    
-    var_instruction: $ => alias(caseInsensitive('VAR'), 'VAR'),
-    array_instruction: $ => alias(caseInsensitive('ARRAY'), 'ARRAY'),
-    str_instruction: $ => alias(caseInsensitive('STR'), 'STR'),
+    // VAR ARRAY STR (simple)
+    var_instruction: $ => seq(
+      alias(caseInsensitive('VAR'), 'VAR'),
+      field('params', alias(/[^\r\n]*/, $.rest_of_line)), // calls
+    ),
+    array_instruction: $ => seq(
+      alias(caseInsensitive('ARRAY'), 'ARRAY'),
+      field('params', alias(/[^\r\n]*/, $.rest_of_line)), // calls
+    ),
+    str_instruction: $ => seq(
+      alias(caseInsensitive('STR'), 'STR'),
+      field('params', alias(/[^\r\n]*/, $.rest_of_line)), // calls
+    ),
 
           // OTHER COMMENT ?
     other_comment_instruction: $ => seq(
@@ -296,11 +304,8 @@ module.exports = grammar({
     ),
 
     native_code: $ => seq(
-      choice(
-        '#',
-        '@'
-      ),
-      optional($.rest_of_line)
+      field('marker', choice('#', '@')),
+      field('content', alias(/[^\r\n]*/, $.c_code)) 
     ),
 
     rest_of_line: $ => /[^\r\n]*/,
@@ -325,4 +330,4 @@ module.exports = grammar({
     ),
     
   }
-});
+});   // TODO:  improve fields maked 'simple' (VAR STUB etc.)

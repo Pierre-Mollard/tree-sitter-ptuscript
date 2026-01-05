@@ -2,7 +2,18 @@
   {
     "type": "array_instruction",
     "named": true,
-    "fields": {}
+    "fields": {
+      "params": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "rest_of_line",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "begin_instruction",
@@ -435,16 +446,31 @@
   {
     "type": "native_code",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": false,
-      "types": [
-        {
-          "type": "rest_of_line",
-          "named": true
-        }
-      ]
+    "fields": {
+      "content": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "c_code",
+            "named": true
+          }
+        ]
+      },
+      "marker": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "#",
+            "named": false
+          },
+          {
+            "type": "@",
+            "named": false
+          }
+        ]
+      }
     }
   },
   {
@@ -682,7 +708,18 @@
   {
     "type": "str_instruction",
     "named": true,
-    "fields": {}
+    "fields": {
+      "params": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "rest_of_line",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "stub_instruction",
@@ -850,7 +887,18 @@
   {
     "type": "var_instruction",
     "named": true,
-    "fields": {}
+    "fields": {
+      "params": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "rest_of_line",
+            "named": true
+          }
+        ]
+      }
+    }
   },
   {
     "type": "#",
@@ -995,6 +1043,10 @@
   {
     "type": "VAR",
     "named": false
+  },
+  {
+    "type": "c_code",
+    "named": true
   },
   {
     "type": "identifier",

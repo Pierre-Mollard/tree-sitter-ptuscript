@@ -3,8 +3,6 @@ HEADER add, 1, 1
 -- this is a comment
 # /* c comment */
 
-<variable declarations for the test script>
-
 ENVIRONMENT name_of_env
     VAR x, init = 2, ev = 7
     STUB API_math_abs(x) EV3_NO_ERR
@@ -14,7 +12,6 @@ BEGIN
 
 SERVICE add
 
-<local variable declarations for the service>
 
     TEST Test_name_66
 
@@ -29,7 +26,6 @@ SERVICE add
         VAR variable1, INIT=0, EV=0, DELTA=1e-4%
 
         VAR variable2, INIT=0, EV=0
-        "this is a string "
 
         #<call to the procedure under test>
 
