@@ -5,12 +5,14 @@
       "name": "ptuscript",
       "camelcase": "PTUScript",
       "title": "PTUScript",
-      "scope": "source.ptuscript",
+      "scope": "source.ptu",
       "file-types": [
         "ptu"
       ],
       "injection-regex": "^ptuscript$",
-      "class-name": "TreeSitterPtuscript"
+      "class-name": "TreeSitterPtuscript",
+      "highlights": "queries/ptuscript/highlights.scm",
+      "injections": "queries/ptuscript/injections.scm"
     }
   ],
   "metadata": {
