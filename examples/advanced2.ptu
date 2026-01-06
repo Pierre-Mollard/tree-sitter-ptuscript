@@ -25,13 +25,14 @@ INCLUDE PTU ../another_file.ptu
 
 DEFINE STUB NAME_OF_STUB_GROUP.1
 
-    #uint32_t stubbed_function1 (float64_t _in X);
+# int u;
+#uint32_t stubbed_function1 (float64_t _in X);
 
 END DEFINE
 
 DEFINE STUB NAME_OF_STUB_GROUP.2
 
-    #return_code_t stubbed_function12 (uint32_t _in Y);
+#return_code_t stubbed_function12 (uint32_t _in Y);
 
 END DEFINE
 
@@ -54,9 +55,9 @@ END ENVIRONMENT -- ENV_1
 
 ENVIRONMENT ENV_2
 
-    STUB stubbed_function1 1 => (273658.12) 12
+STUB stubbed_function1 1 => (273658.12) 12
 
-    STUB stubbed_function2 1..200 => (0) True
+STUB stubbed_function2 1..200 => (0) True
 
 END ENVIRONMENT -- ENV_2
 
@@ -123,8 +124,8 @@ SERVICE_TYPE extern
             USE ENV_1
 
             ARRAY table, init={0, 0}, ev=init
-            STR Output.element1, init=0, ev=init
-            VAR Output.element2, init=0, ev=init
+              STR Output.element1, init=0, ev=init
+              VAR Output.element2, init=0, ev=init
             VAR Output.element3[0..10][0..10], init=0, ev=-1
 
             #ReturnCode = tested_function(var1, flag, &table[0], &Output);

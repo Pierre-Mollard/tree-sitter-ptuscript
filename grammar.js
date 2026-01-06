@@ -36,18 +36,17 @@ module.exports = grammar({
       $.environment_block,
       $.family_instruction,
       $.format_instruction,
-      $.header_block,
-      $.ifelse_instruction,
-      $.simul_instruction,
+      $.header_instruction,
+      $.ifelse_block,
+      $.simul_block,
       $.include_instruction,
       $.init_block,
-      $.next_test_block,
+      $.next_test_instruction,
       $.service_block,
-      $.simul_instruction,
       $.stub_instruction,
       $.termination_block,
       $.test_block,
-      $.use_block,
+      $.use_instruction,
       $.other_comment_instruction,
     ),
 
@@ -69,8 +68,8 @@ module.exports = grammar({
       repeat(choice(
         $.native_code,
         $.comment_instruction,
-        $.ifelse_instruction,
-        $.simul_instruction,
+        $.ifelse_block,
+        $.simul_block,
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('DEFINE'), 'DEFINE'),
@@ -86,9 +85,9 @@ module.exports = grammar({
         $.array_instruction,
         $.str_instruction,
         $.stub_instruction,
-        $.ifelse_instruction,
-        $.simul_instruction,
-        $.use_block,
+        $.ifelse_block,
+        $.simul_block,
+        $.use_instruction,
         $.identifier,
       )),
       alias(caseInsensitive('END'), 'END'),
@@ -113,8 +112,8 @@ module.exports = grammar({
         $.str_instruction,
         $.stub_instruction,
         $.format_instruction,
-        $.ifelse_instruction,
-        $.simul_instruction,
+        $.ifelse_block,
+        $.simul_block,
         $.identifier
       )),
       alias(caseInsensitive('END'), 'END'),
@@ -139,7 +138,7 @@ module.exports = grammar({
     ),
 
     // HEADER
-    header_block: $ => seq(
+    header_instruction: $ => seq(
       alias(caseInsensitive('HEADER'), 'HEADER'),
       optional(
         seq(
@@ -153,7 +152,7 @@ module.exports = grammar({
     ),
 
     // IF ELSE BLOCK
-    ifelse_instruction: $ => seq(
+    ifelse_block: $ => seq(
       alias(caseInsensitive('IF'), 'IF'),
       field('condition', alias(/[^\r\n]+/, $.until_new_line)), // C code so anything goes
       field('consequence', alias(repeat($._definition), $.block)),
@@ -186,7 +185,7 @@ module.exports = grammar({
     ),
 
     // NEXT_TEST
-    next_test_block: $ => seq(
+    next_test_instruction: $ => seq(
       alias(caseInsensitive('NEXT_TEST'), 'NEXT_TEST'),
       optional(seq(
         alias(caseInsensitive('LOOP'), 'LOOP'),
@@ -203,19 +202,19 @@ module.exports = grammar({
         $.environment_block,
         $.comment_instruction,
         $.native_code,
-        $.ifelse_instruction,
-        $.simul_instruction,
+        $.ifelse_block,
+        $.simul_block,
         $.var_instruction,
         $.array_instruction,
         $.str_instruction,
-        $.use_block,
+        $.use_instruction,
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('SERVICE'), 'SERVICE'),
     ),
 
     // SIMUL BLOCK
-    simul_instruction: $ => seq(
+    simul_block: $ => seq(
       alias(caseInsensitive('SIMUL'), 'SIMUL'),
       field('consequence', alias(repeat($._definition), $.block)),
       optional(seq(
@@ -257,22 +256,22 @@ module.exports = grammar({
       repeat(choice(
         $.element_block,
         $.family_instruction,
-        $.next_test_block,
-        $.ifelse_instruction,
-        $.simul_instruction,
+        $.next_test_instruction,
+        $.ifelse_block,
+        $.simul_block,
         $.comment_instruction,
         $.var_instruction,
         $.array_instruction,
         $.str_instruction,
         $.native_code,
-        $.use_block,
+        $.use_instruction,
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('TEST'), 'TEST'),
     ),
 
     // USE
-    use_block: $ => seq(
+    use_instruction: $ => seq(
       alias(caseInsensitive('USE'), 'USE'),
       field('name', $.identifier),
       optional(seq(

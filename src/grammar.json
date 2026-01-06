@@ -47,15 +47,15 @@
         },
         {
           "type": "SYMBOL",
-          "name": "header_block"
+          "name": "header_instruction"
         },
         {
           "type": "SYMBOL",
-          "name": "ifelse_instruction"
+          "name": "ifelse_block"
         },
         {
           "type": "SYMBOL",
-          "name": "simul_instruction"
+          "name": "simul_block"
         },
         {
           "type": "SYMBOL",
@@ -67,15 +67,11 @@
         },
         {
           "type": "SYMBOL",
-          "name": "next_test_block"
+          "name": "next_test_instruction"
         },
         {
           "type": "SYMBOL",
           "name": "service_block"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "simul_instruction"
         },
         {
           "type": "SYMBOL",
@@ -91,7 +87,7 @@
         },
         {
           "type": "SYMBOL",
-          "name": "use_block"
+          "name": "use_instruction"
         },
         {
           "type": "SYMBOL",
@@ -195,11 +191,11 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "ifelse_instruction"
+                "name": "ifelse_block"
               },
               {
                 "type": "SYMBOL",
-                "name": "simul_instruction"
+                "name": "simul_block"
               }
             ]
           }
@@ -267,15 +263,15 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "ifelse_instruction"
+                "name": "ifelse_block"
               },
               {
                 "type": "SYMBOL",
-                "name": "simul_instruction"
+                "name": "simul_block"
               },
               {
                 "type": "SYMBOL",
-                "name": "use_block"
+                "name": "use_instruction"
               },
               {
                 "type": "SYMBOL",
@@ -408,11 +404,11 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "ifelse_instruction"
+                "name": "ifelse_block"
               },
               {
                 "type": "SYMBOL",
-                "name": "simul_instruction"
+                "name": "simul_block"
               },
               {
                 "type": "SYMBOL",
@@ -535,7 +531,7 @@
         }
       ]
     },
-    "header_block": {
+    "header_instruction": {
       "type": "SEQ",
       "members": [
         {
@@ -594,7 +590,7 @@
         }
       ]
     },
-    "ifelse_instruction": {
+    "ifelse_block": {
       "type": "SEQ",
       "members": [
         {
@@ -790,7 +786,7 @@
         }
       ]
     },
-    "next_test_block": {
+    "next_test_instruction": {
       "type": "SEQ",
       "members": [
         {
@@ -882,11 +878,11 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "ifelse_instruction"
+                "name": "ifelse_block"
               },
               {
                 "type": "SYMBOL",
-                "name": "simul_instruction"
+                "name": "simul_block"
               },
               {
                 "type": "SYMBOL",
@@ -902,7 +898,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "use_block"
+                "name": "use_instruction"
               }
             ]
           }
@@ -927,7 +923,7 @@
         }
       ]
     },
-    "simul_instruction": {
+    "simul_block": {
       "type": "SEQ",
       "members": [
         {
@@ -1196,15 +1192,15 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "next_test_block"
+                "name": "next_test_instruction"
               },
               {
                 "type": "SYMBOL",
-                "name": "ifelse_instruction"
+                "name": "ifelse_block"
               },
               {
                 "type": "SYMBOL",
-                "name": "simul_instruction"
+                "name": "simul_block"
               },
               {
                 "type": "SYMBOL",
@@ -1228,7 +1224,7 @@
               },
               {
                 "type": "SYMBOL",
-                "name": "use_block"
+                "name": "use_instruction"
               }
             ]
           }
@@ -1253,7 +1249,7 @@
         }
       ]
     },
-    "use_block": {
+    "use_instruction": {
       "type": "SEQ",
       "members": [
         {
