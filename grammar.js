@@ -323,15 +323,119 @@ module.exports = grammar({
     _var_triplet: $ => prec(2, seq(
       field('variable', $.expression),
       ',',
-      field('initialization', $.expression),
+      field('initialization', $.init_spec),
       ',',
-      field('expected_value', $.expression),
+      field('expected_value', $.expected_spec),
     )),
     _var_doublet: $ => prec(1, seq(
       field('expression', $.expression),
       ',',
-      field('expected_value', $.expression),
+      field('expected_value', $.expected_spec),
     )),
+
+    init_spec: $ => choice(
+      $.init_expression,       // INIT = <expr>
+      $.init_in,               // INIT IN { ... }
+      $.init_with,             // INIT (...) WITH { ... }
+      $.init_from,             // INIT FROM ... TO ...
+      $.init_reference         // INIT ==
+    ),
+    init_expression: $ => seq(
+      alias(caseInsensitive('INIT'), 'INIT'),
+      '=',
+      field('value', $.expression)
+    ),
+    init_in: $ => seq(
+      alias(caseInsensitive('INIT'), 'INIT'),
+      alias(caseInsensitive('IN'), 'IN'),
+      '{',
+      comma_sep($.expression),
+      '}'
+    ),
+    init_with: $ => seq(
+      alias(caseInsensitive('INIT'), 'INIT'),
+      '(',
+      comma_sep($.expression),
+      ')',
+      alias(caseInsensitive('WITH'), 'WITH'),
+      '{',
+      comma_sep($.expression),
+      '}'
+    ),
+    init_from: $ => seq(
+      alias(caseInsensitive('INIT'), 'INIT'),
+      alias(caseInsensitive('FROM'), 'FROM'),
+      field('start', $.expression),
+      alias(caseInsensitive('TO'), 'TO'),
+      field('end', $.expression),
+      optional(choice(
+        seq(alias(caseInsensitive('STEP'), 'STEP'), field('step', $.expression)),
+        seq(alias(caseInsensitive('NB_TIMES'), 'NB_TIMES'), field('count', $.expression)),
+        seq(
+          alias(caseInsensitive('NB_RANDOM'), 'NB_RANDOM'),
+          field('count', $.expression),
+          optional(alias(caseInsensitive('BOUNDS'), 'BOUNDS'))
+        )
+      ))
+    ),
+    init_reference: $ => seq(
+      alias(caseInsensitive('INIT'), 'INIT'),
+      '==',
+    ),
+
+    expected_spec: $ => choice(
+      $.expec_exp,           // EV = <expr>
+      $.expec_delta,         // EV = <expr>, DELTA = <delta>
+      $.expec_bounds,        // MIN = <expr>, MAX = <expr>
+      $.expec_in,            // EV IN { <expr>, ... }
+      $.expec_var_in,        // EV ( <var> ) IN { <expr>, ... }
+      $.expec_reference      // EV ==
+    ),
+    expec_exp: $ => seq(
+      alias(caseInsensitive('EV'), 'EV'),
+      '=',
+      field('value', $.expression)
+    ),
+    expec_delta: $ => seq(
+      alias(caseInsensitive('EV'), 'EV'),
+      '=',
+      field('value', $.expression),
+      ',',
+      alias(caseInsensitive('DELTA'), 'DELTA'),
+      '=',
+      field('delta', $.expression),
+      optional('%')
+    ),
+    expec_bounds: $ => seq(
+      alias(caseInsensitive('MIN'), 'MIN'),
+      '=',
+      field('min', $.expression),
+      ',',
+      alias(caseInsensitive('MAX'), 'MAX'),
+      '=',
+      field('max', $.expression),
+    ),
+    expec_in: $ => seq(
+      alias(caseInsensitive('EV'), 'EV'),
+      alias(caseInsensitive('IN'), 'IN'),
+      '{',
+      comma_sep($.expression),
+      '}',
+    ),
+    expec_var_in: $ => seq(
+      alias(caseInsensitive('EV'), 'EV'),
+      '(',
+      field('value', $.expression),
+      ')',
+      alias(caseInsensitive('IN'), 'IN'),
+      '{',
+      comma_sep($.expression),
+      '}',
+    ),
+    expec_reference: $ => seq(
+      alias(caseInsensitive('EV'), 'EV'),
+      '==',
+    ),
 
     rest_of_line: $ => /[^\r\n]*/,
     until_new_line: $ => /[^\r\n]+/,
@@ -352,11 +456,12 @@ module.exports = grammar({
       $.char_literal,
       $.parenthesized_expression,
       $.call_expression,
-      $.subscript_expression,   // Handles char[0]
-      $.field_expression,       // Handles struct.field and ptr->field
-      $.unary_expression,       // Handles *ptr, &addr, !not, -neg
-      $.binary_expression,      // Handles a+b, a>b, etc.
-      $.assignment_expression   // Handles init=10 or ev=20
+      $.subscript_expression,
+      $.field_expression,
+      $.unary_expression,
+      $.binary_expression,
+      $.assignment_expression,
+      $.range_expression
     ),
     parenthesized_expression: $ => seq('(', $.expression, ')'),
     call_expression: $ => prec(1, seq(
@@ -388,6 +493,11 @@ module.exports = grammar({
     assignment_expression: $ => prec.right(0, seq(
       $.expression,
       choice('=', '+=', '-='),
+      $.expression
+    )),
+    range_expression: $ => prec.left(1, seq(
+      $.expression,
+      '..',
       $.expression
     )),
     

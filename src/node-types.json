@@ -8,7 +8,7 @@
         "required": true,
         "types": [
           {
-            "type": "expression",
+            "type": "expected_spec",
             "named": true
           }
         ]
@@ -28,7 +28,7 @@
         "required": false,
         "types": [
           {
-            "type": "expression",
+            "type": "init_spec",
             "named": true
           }
         ]
@@ -385,6 +385,155 @@
     }
   },
   {
+    "type": "expec_bounds",
+    "named": true,
+    "fields": {
+      "max": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "min": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "expec_delta",
+    "named": true,
+    "fields": {
+      "delta": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "expec_exp",
+    "named": true,
+    "fields": {
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "expec_in",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expec_reference",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "expec_var_in",
+    "named": true,
+    "fields": {
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "expected_spec",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "expec_bounds",
+          "named": true
+        },
+        {
+          "type": "expec_delta",
+          "named": true
+        },
+        {
+          "type": "expec_exp",
+          "named": true
+        },
+        {
+          "type": "expec_in",
+          "named": true
+        },
+        {
+          "type": "expec_reference",
+          "named": true
+        },
+        {
+          "type": "expec_var_in",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "expression",
     "named": true,
     "fields": {},
@@ -422,6 +571,10 @@
         },
         {
           "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "range_expression",
           "named": true
         },
         {
@@ -611,6 +764,134 @@
     }
   },
   {
+    "type": "init_expression",
+    "named": true,
+    "fields": {
+      "value": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "init_from",
+    "named": true,
+    "fields": {
+      "count": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "end": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "start": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "step": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "init_in",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "init_reference",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "init_spec",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "init_expression",
+          "named": true
+        },
+        {
+          "type": "init_from",
+          "named": true
+        },
+        {
+          "type": "init_in",
+          "named": true
+        },
+        {
+          "type": "init_reference",
+          "named": true
+        },
+        {
+          "type": "init_with",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "init_with",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "native_code",
     "named": true,
     "fields": {
@@ -697,6 +978,21 @@
       "types": [
         {
           "type": "string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "range_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
           "named": true
         }
       ]
@@ -896,7 +1192,7 @@
         "required": true,
         "types": [
           {
-            "type": "expression",
+            "type": "expected_spec",
             "named": true
           }
         ]
@@ -916,7 +1212,7 @@
         "required": false,
         "types": [
           {
-            "type": "expression",
+            "type": "init_spec",
             "named": true
           }
         ]
@@ -1146,7 +1442,7 @@
         "required": true,
         "types": [
           {
-            "type": "expression",
+            "type": "expected_spec",
             "named": true
           }
         ]
@@ -1166,7 +1462,7 @@
         "required": false,
         "types": [
           {
-            "type": "expression",
+            "type": "init_spec",
             "named": true
           }
         ]
@@ -1256,6 +1552,10 @@
     "named": false
   },
   {
+    "type": "..",
+    "named": false
+  },
+  {
     "type": "/",
     "named": false
   },
@@ -1296,6 +1596,10 @@
     "named": false
   },
   {
+    "type": "BOUNDS",
+    "named": false
+  },
+  {
     "type": "CODE",
     "named": false
   },
@@ -1305,6 +1609,10 @@
   },
   {
     "type": "DEFINE",
+    "named": false
+  },
+  {
+    "type": "DELTA",
     "named": false
   },
   {
@@ -1328,11 +1636,19 @@
     "named": false
   },
   {
+    "type": "EV",
+    "named": false
+  },
+  {
     "type": "FAMILY",
     "named": false
   },
   {
     "type": "FORMAT",
+    "named": false
+  },
+  {
+    "type": "FROM",
     "named": false
   },
   {
@@ -1344,7 +1660,15 @@
     "named": false
   },
   {
+    "type": "IN",
+    "named": false
+  },
+  {
     "type": "INCLUDE",
+    "named": false
+  },
+  {
+    "type": "INIT",
     "named": false
   },
   {
@@ -1353,6 +1677,22 @@
   },
   {
     "type": "LOOP",
+    "named": false
+  },
+  {
+    "type": "MAX",
+    "named": false
+  },
+  {
+    "type": "MIN",
+    "named": false
+  },
+  {
+    "type": "NB_RANDOM",
+    "named": false
+  },
+  {
+    "type": "NB_TIMES",
     "named": false
   },
   {
@@ -1372,6 +1712,10 @@
     "named": false
   },
   {
+    "type": "STEP",
+    "named": false
+  },
+  {
     "type": "STR",
     "named": false
   },
@@ -1388,11 +1732,19 @@
     "named": false
   },
   {
+    "type": "TO",
+    "named": false
+  },
+  {
     "type": "USE",
     "named": false
   },
   {
     "type": "VAR",
+    "named": false
+  },
+  {
+    "type": "WITH",
     "named": false
   },
   {
@@ -1436,11 +1788,19 @@
     "named": true
   },
   {
+    "type": "{",
+    "named": false
+  },
+  {
     "type": "|",
     "named": false
   },
   {
     "type": "||",
+    "named": false
+  },
+  {
+    "type": "}",
     "named": false
   },
   {
