@@ -60,7 +60,7 @@ SERVICE_TYPE extern
         #return_value = tested_function(var1, &output);
 
         VAR return_value, init =1, ev =0
-        VAR output, init =0, ev(var1) with {619315200, 619315200, 625766430, 0xFFFFFFFE, 0xFFFFFFFF}
+        VAR output, init =0, ev(var1) in {619315200, 619315200, 625766430, 0xFFFFFFFE, 0xFFFFFFFF}
 
         END ELEMENT
     END TEST

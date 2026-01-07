@@ -68,13 +68,12 @@ module.exports = grammar({
       alias(caseInsensitive('DEFINE'), 'DEFINE'),
       alias(caseInsensitive('STUB'), 'STUB'),
       field('function', seq(
-         optional(seq(field('stub_name', $.identifier), '.')),
-         field('function_name', $.identifier)
+         field('function_name', $.identifier),
+         optional('.'),
       )),
-      optional(field('stub_dim', alias(/\d+/, $.number))),
+      optional(field('stub_dim', $.number)),
       repeat(choice(
         $.stub_code,
-        //$.native_code, TODO: check if possible to have both
         $.comment_instruction,
         $.other_comment_instruction,
         $.ifelse_block,
@@ -155,9 +154,9 @@ module.exports = grammar({
         seq(
           field('module_name', $.identifier), // module_name
           ',',
-          optional(field('module_version', $.identifier)), // module_version
+          optional(field('module_version', $.expression)), // module_version
           ',',
-          optional(field('test_plan_version', $.identifier))  // test_plan_version
+          optional(field('test_plan_version', $.expression))  // test_plan_version
         )
       )
     ),
@@ -338,7 +337,8 @@ module.exports = grammar({
 
     stub_code: $ => prec(2, seq(
       field('marker', choice('#', '@')),
-      $.stub_call_signature
+      $.stub_call_signature,
+      optional(';'),
     )),
     stub_call_signature: $ => seq(
       optional(field('type', $.expression)),
@@ -348,6 +348,7 @@ module.exports = grammar({
       ')'
     ),
     _stub_parameter: $ => seq(
+      optional(field('type', $.expression)),
       optional(field('mode', choice(
         alias('_in', $.mode_in),
         alias('_out', $.mode_out),
@@ -372,22 +373,22 @@ module.exports = grammar({
     )),
 
     init_spec: $ => choice(
-      $.init_expression,       // INIT = <expr>
+      $.init_equal,       // INIT = <expr>
       $.init_in,               // INIT IN { ... }
       $.init_with,             // INIT (...) WITH { ... }
       $.init_from,             // INIT FROM ... TO ...
       $.init_reference         // INIT ==
     ),
-    init_expression: $ => seq(
+    init_equal: $ => seq(
       alias(caseInsensitive('INIT'), 'INIT'),
       '=',
-      field('value', $.expression)
+      field('value', $.init_exp_field)
     ),
     init_in: $ => seq(
       alias(caseInsensitive('INIT'), 'INIT'),
       alias(caseInsensitive('IN'), 'IN'),
       '{',
-      comma_sep($.expression),
+      comma_sep($.init_exp_field),
       '}'
     ),
     init_with: $ => seq(
@@ -397,17 +398,17 @@ module.exports = grammar({
       ')',
       alias(caseInsensitive('WITH'), 'WITH'),
       '{',
-      comma_sep($.expression),
+      comma_sep($.init_exp_field),
       '}'
     ),
     init_from: $ => seq(
       alias(caseInsensitive('INIT'), 'INIT'),
       alias(caseInsensitive('FROM'), 'FROM'),
-      field('start', $.expression),
+      field('start', $.init_exp_field),
       alias(caseInsensitive('TO'), 'TO'),
-      field('end', $.expression),
+      field('end', $.init_exp_field),
       optional(choice(
-        seq(alias(caseInsensitive('STEP'), 'STEP'), field('step', $.expression)),
+        seq(alias(caseInsensitive('STEP'), 'STEP'), field('step', $.init_exp_field)),
         seq(alias(caseInsensitive('NB_TIMES'), 'NB_TIMES'), field('count', $.expression)),
         seq(
           alias(caseInsensitive('NB_RANDOM'), 'NB_RANDOM'),
@@ -419,6 +420,14 @@ module.exports = grammar({
     init_reference: $ => seq(
       alias(caseInsensitive('INIT'), 'INIT'),
       '==',
+    ),
+    init_exp_field: $ => choice(
+      $.rtrt_vars,
+      $.expression,
+      seq(alias(caseInsensitive('CONST'), 'CONST'), $.expression),
+      seq('{', comma_sep($.expression), '}'),
+      seq($.expression, '=>', $.expression),
+      seq(alias(caseInsensitive('OTHERS'), 'OTHERS'), '=>', $.expression)
     ),
 
     expected_spec: $ => choice(
@@ -432,12 +441,12 @@ module.exports = grammar({
     expec_exp: $ => seq(
       alias(caseInsensitive('EV'), 'EV'),
       '=',
-      field('value', $.expression)
+      field('value', $.expec_exp_field)
     ),
     expec_delta: $ => seq(
       alias(caseInsensitive('EV'), 'EV'),
       '=',
-      field('value', $.expression),
+      field('value', $.expec_exp_field),
       ',',
       alias(caseInsensitive('DELTA'), 'DELTA'),
       '=',
@@ -447,17 +456,17 @@ module.exports = grammar({
     expec_bounds: $ => seq(
       alias(caseInsensitive('MIN'), 'MIN'),
       '=',
-      field('min', $.expression),
+      field('min', $.expec_exp_field),
       ',',
       alias(caseInsensitive('MAX'), 'MAX'),
       '=',
-      field('max', $.expression),
+      field('max', $.expec_exp_field),
     ),
     expec_in: $ => seq(
       alias(caseInsensitive('EV'), 'EV'),
       alias(caseInsensitive('IN'), 'IN'),
       '{',
-      comma_sep($.expression),
+      comma_sep($.expec_exp_field),
       '}',
     ),
     expec_var_in: $ => seq(
@@ -467,12 +476,30 @@ module.exports = grammar({
       ')',
       alias(caseInsensitive('IN'), 'IN'),
       '{',
-      comma_sep($.expression),
+      comma_sep($.expec_exp_field),
       '}',
     ),
     expec_reference: $ => seq(
       alias(caseInsensitive('EV'), 'EV'),
       '==',
+    ),
+    expec_exp_field: $ => choice(
+      $.rtrt_vars,
+      $.expression,
+      seq(alias(caseInsensitive('CONST'), 'CONST'), $.expression),
+      seq('{', comma_sep($.expression), '}'),
+      seq($.expression, '=>', $.expression),
+      seq(alias(caseInsensitive('OTHERS'), 'OTHERS'), '=>', $.expression),
+      alias(caseInsensitive('INIT'), 'INIT'),
+      alias(caseInsensitive('NIL'), 'NIL'),
+      alias(caseInsensitive('NONIL'), 'NONIL'),
+    ),
+
+    rtrt_vars: $ => choice(
+      seq('J', $.number),
+      seq('j', $.number),
+      seq('I', $.number),
+      seq('i', $.number),
     ),
 
     rest_of_line: $ => /[^\r\n]*/,
