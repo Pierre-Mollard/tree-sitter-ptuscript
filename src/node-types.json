@@ -217,6 +217,26 @@
     "type": "define_stub_block",
     "named": true,
     "fields": {
+      "function": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": ".",
+            "named": false
+          }
+        ]
+      },
+      "function_name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
       "stub_dim": {
         "multiple": false,
         "required": false,
@@ -229,7 +249,7 @@
       },
       "stub_name": {
         "multiple": false,
-        "required": true,
+        "required": false,
         "types": [
           {
             "type": "identifier",
@@ -251,11 +271,15 @@
           "named": true
         },
         {
-          "type": "native_code",
+          "type": "other_comment_instruction",
           "named": true
         },
         {
           "type": "simul_block",
+          "named": true
+        },
+        {
+          "type": "stub_code",
           "named": true
         }
       ]
@@ -287,6 +311,10 @@
         },
         {
           "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "other_comment_instruction",
           "named": true
         },
         {
@@ -363,6 +391,10 @@
         },
         {
           "type": "native_code",
+          "named": true
+        },
+        {
+          "type": "other_comment_instruction",
           "named": true
         },
         {
@@ -938,6 +970,11 @@
     }
   },
   {
+    "type": "number",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "other_comment_instruction",
     "named": true,
     "fields": {
@@ -1043,6 +1080,14 @@
           "named": true
         },
         {
+          "type": "other_comment_instruction",
+          "named": true
+        },
+        {
+          "type": "service_type_instruction",
+          "named": true
+        },
+        {
           "type": "simul_block",
           "named": true
         },
@@ -1063,6 +1108,22 @@
           "named": true
         }
       ]
+    }
+  },
+  {
+    "type": "service_type_instruction",
+    "named": true,
+    "fields": {
+      "service_name": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
@@ -1230,6 +1291,94 @@
     }
   },
   {
+    "type": "stub_call_signature",
+    "named": true,
+    "fields": {
+      "function": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "mode": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "mode_in",
+            "named": true
+          },
+          {
+            "type": "mode_inout",
+            "named": true
+          },
+          {
+            "type": "mode_no",
+            "named": true
+          },
+          {
+            "type": "mode_out",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "stub_code",
+    "named": true,
+    "fields": {
+      "marker": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "#",
+            "named": false
+          },
+          {
+            "type": "@",
+            "named": false
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "stub_call_signature",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "stub_instruction",
     "named": true,
     "fields": {
@@ -1371,6 +1520,10 @@
         },
         {
           "type": "next_test_instruction",
+          "named": true
+        },
+        {
+          "type": "other_comment_instruction",
           "named": true
         },
         {
@@ -1708,6 +1861,10 @@
     "named": false
   },
   {
+    "type": "SERVICE_TYPE",
+    "named": false
+  },
+  {
     "type": "SIMUL",
     "named": false
   },
@@ -1772,7 +1929,19 @@
     "named": true
   },
   {
-    "type": "number",
+    "type": "mode_in",
+    "named": true
+  },
+  {
+    "type": "mode_inout",
+    "named": true
+  },
+  {
+    "type": "mode_no",
+    "named": true
+  },
+  {
+    "type": "mode_out",
     "named": true
   },
   {

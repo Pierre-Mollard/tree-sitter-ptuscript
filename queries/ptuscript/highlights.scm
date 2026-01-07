@@ -86,3 +86,14 @@
 (comment_instruction)       @comment     ; Standard grey
 (other_comment_instruction) @comment     ; Standard grey
 
+
+; STUB
+
+(mode_in) @type.qualifier     ; e.g., "const" color
+(mode_out) @type.qualifier
+(mode_inout) @type.qualifier
+(mode_no) @type.qualifier
+
+(identifier) @variable
+(string) @string
+(number) @number

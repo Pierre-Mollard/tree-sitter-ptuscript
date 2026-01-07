@@ -67,11 +67,16 @@ module.exports = grammar({
     define_stub_block: $ => seq(
       alias(caseInsensitive('DEFINE'), 'DEFINE'),
       alias(caseInsensitive('STUB'), 'STUB'),
-      field('stub_name', $.identifier),
+      field('function', seq(
+         optional(seq(field('stub_name', $.identifier), '.')),
+         field('function_name', $.identifier)
+      )),
       optional(field('stub_dim', alias(/\d+/, $.number))),
       repeat(choice(
-        $.native_code,
+        $.stub_code,
+        //$.native_code, TODO: check if possible to have both
         $.comment_instruction,
+        $.other_comment_instruction,
         $.ifelse_block,
         $.simul_block,
       )),
@@ -85,6 +90,7 @@ module.exports = grammar({
       repeat(choice(
         $.native_code,
         $.comment_instruction,
+        $.other_comment_instruction,
         $.var_instruction,
         $.array_instruction,
         $.str_instruction,
@@ -111,6 +117,7 @@ module.exports = grammar({
       repeat(choice(
         $.native_code,
         $.comment_instruction,
+        $.other_comment_instruction,
         $.var_instruction,
         $.array_instruction,
         $.str_instruction,
@@ -148,9 +155,9 @@ module.exports = grammar({
         seq(
           field('module_name', $.identifier), // module_name
           ',',
-          field('module_version', $.identifier), // module_version
+          optional(field('module_version', $.identifier)), // module_version
           ',',
-          field('test_plan_version', $.identifier)  // test_plan_version
+          optional(field('test_plan_version', $.identifier))  // test_plan_version
         )
       )
     ),
@@ -202,9 +209,11 @@ module.exports = grammar({
       alias(caseInsensitive('SERVICE'), 'SERVICE'),
       field('service_name', $.identifier), // service_name
       repeat(choice(
+        $.service_type_instruction,
         $.test_block,
         $.environment_block,
         $.comment_instruction,
+        $.other_comment_instruction,
         $.native_code,
         $.ifelse_block,
         $.simul_block,
@@ -215,6 +224,13 @@ module.exports = grammar({
       )),
       alias(caseInsensitive('END'), 'END'),
       alias(caseInsensitive('SERVICE'), 'SERVICE'),
+    ),
+    service_type_instruction: $ => seq(
+      alias(caseInsensitive('SERVICE_TYPE'), 'SERVICE_TYPE'),
+      optional(seq(
+        field('service_name', $.identifier),
+        repeat(seq(',', field('service_name', $.identifier))),
+      )),
     ),
 
     // SIMUL BLOCK
@@ -264,6 +280,7 @@ module.exports = grammar({
         $.ifelse_block,
         $.simul_block,
         $.comment_instruction,
+        $.other_comment_instruction,
         $.var_instruction,
         $.array_instruction,
         $.str_instruction,
@@ -314,9 +331,30 @@ module.exports = grammar({
         field('text', $.rest_of_line)
     ),
 
-    native_code: $ => seq(
+    native_code: $ => prec(1, seq(
       field('marker', choice('#', '@')),
       field('content', alias(/[^\r\n]*/, $.c_code)) 
+    )),
+
+    stub_code: $ => prec(2, seq(
+      field('marker', choice('#', '@')),
+      $.stub_call_signature
+    )),
+    stub_call_signature: $ => seq(
+      optional(field('type', $.expression)),
+      field('function', $.expression),
+      '(',
+      optional(comma_sep($._stub_parameter)),
+      ')'
+    ),
+    _stub_parameter: $ => seq(
+      optional(field('mode', choice(
+        alias('_in', $.mode_in),
+        alias('_out', $.mode_out),
+        alias('_inout', $.mode_inout),
+        alias('_no', $.mode_no)
+      ))),
+      field('value', $.expression)
     ),
 
     // Helpers
@@ -446,7 +484,10 @@ module.exports = grammar({
     ),
 
     identifier: $ => /[a-zA-Z_]\w*/,
-    number: $ => /(\d+(\.\d*)?)|(0x[0-9a-fA-F]+)/,
+    number: $ => choice(
+      /0x[0-9a-fA-F]+/,
+      /(\d+(\.\d*)?([eE][+-]?\d+)?%?)/
+    ),
     string: $ => /"([^"\\]|\\.)*"/,
     char_literal: $ => /'([^'\\]|\\.)'/,
     expression: $ => choice(
@@ -502,4 +543,4 @@ module.exports = grammar({
     )),
     
   }
-});   // TODO:  improve fields maked 'simple' (VAR STUB etc.)
+});
