@@ -25,10 +25,32 @@
 "ARRAY"             @keyword.import
 "STR"               @keyword.import
 
-; The variable name being declared -> RED/FLAMINGO
-(var_instruction   params: (rest_of_line) @tag)
-(array_instruction params: (rest_of_line) @tag)
-(str_instruction   params: (rest_of_line) @tag)
+(var_instruction 
+  variable: (_) @variable
+  initialization: (_) @number
+  expected_value: (_) @constant)
+
+(var_instruction 
+  expression: (_) @operator
+  expected_value: (_) @constant)
+
+(array_instruction 
+  variable: (_) @variable
+  initialization: (_) @number
+  expected_value: (_) @constant)
+
+(array_instruction 
+  expression: (_) @operator
+  expected_value: (_) @constant)
+
+(str_instruction 
+  variable: (_) @variable
+  initialization: (_) @number
+  expected_value: (_) @constant)
+
+(str_instruction 
+  expression: (_) @operator
+  expected_value: (_) @constant)
 
 ; ----------------------------------------------------------------------------
 ; TEST PARAMETERS -> YELLOW/GOLD

@@ -12,7 +12,8 @@
       "injection-regex": "^ptuscript$",
       "class-name": "TreeSitterPtuscript",
       "highlights": "queries/ptuscript/highlights.scm",
-      "injections": "queries/ptuscript/injections.scm"
+      "injections": "queries/ptuscript/injections.scm",
+      "indents": "queries/ptuscript/indents.scm"
     }
   ],
   "metadata": {

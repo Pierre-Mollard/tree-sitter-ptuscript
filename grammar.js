@@ -16,6 +16,10 @@ function caseInsensitive(keyword) {
   );
 }
 
+function comma_sep(rule) {
+  return seq(rule, repeat(seq(',', rule)));
+}
+
 module.exports = grammar({
   name: "ptuscript",
   
@@ -285,18 +289,26 @@ module.exports = grammar({
     // VAR ARRAY STR (simple)
     var_instruction: $ => seq(
       alias(caseInsensitive('VAR'), 'VAR'),
-      field('params', alias(/[^\r\n]*/, $.rest_of_line)), // calls
+      choice(
+        $._var_triplet,
+        $._var_doublet,
+      ),
     ),
     array_instruction: $ => seq(
       alias(caseInsensitive('ARRAY'), 'ARRAY'),
-      field('params', alias(/[^\r\n]*/, $.rest_of_line)), // calls
+      choice(
+        $._var_triplet,
+        $._var_doublet,
+      ),
     ),
     str_instruction: $ => seq(
       alias(caseInsensitive('STR'), 'STR'),
-      field('params', alias(/[^\r\n]*/, $.rest_of_line)), // calls
+      choice(
+        $._var_triplet,
+        $._var_doublet,
+      ),
     ),
 
-          // OTHER COMMENT ?
     other_comment_instruction: $ => seq(
         choice('--', '++'),
         field('text', $.rest_of_line)
@@ -307,26 +319,77 @@ module.exports = grammar({
       field('content', alias(/[^\r\n]*/, $.c_code)) 
     ),
 
+    // Helpers
+    _var_triplet: $ => prec(2, seq(
+      field('variable', $.expression),
+      ',',
+      field('initialization', $.expression),
+      ',',
+      field('expected_value', $.expression),
+    )),
+    _var_doublet: $ => prec(1, seq(
+      field('expression', $.expression),
+      ',',
+      field('expected_value', $.expression),
+    )),
+
     rest_of_line: $ => /[^\r\n]*/,
     until_new_line: $ => /[^\r\n]+/,
 
-    // String literal
-    string: $ => token(seq(
-      '"',
-      repeat(choice(
-        /[^"\\\n]+/,        // Match non-quote, non-backslash, non-newline
-        /\\./               // Match escaped characters like \" or \n
-      )),
-      '"'
-    )),
-
-    // C Test Script language identifier (check the doc)
-    identifier: $ => /[a-zA-Z0-9_]+/,
-    number: $ => /\d+/,
     path_value: $ => choice(
       $.string,
       token(/[a-zA-Z0-9_./\\]+/),
     ),
+
+    identifier: $ => /[a-zA-Z_]\w*/,
+    number: $ => /(\d+(\.\d*)?)|(0x[0-9a-fA-F]+)/,
+    string: $ => /"([^"\\]|\\.)*"/,
+    char_literal: $ => /'([^'\\]|\\.)'/,
+    expression: $ => choice(
+      $.identifier,
+      $.number,
+      $.string,
+      $.char_literal,
+      $.parenthesized_expression,
+      $.call_expression,
+      $.subscript_expression,   // Handles char[0]
+      $.field_expression,       // Handles struct.field and ptr->field
+      $.unary_expression,       // Handles *ptr, &addr, !not, -neg
+      $.binary_expression,      // Handles a+b, a>b, etc.
+      $.assignment_expression   // Handles init=10 or ev=20
+    ),
+    parenthesized_expression: $ => seq('(', $.expression, ')'),
+    call_expression: $ => prec(1, seq(
+      field('function', $.expression),
+      '(',
+      optional(comma_sep($.expression)), // Defined below
+      ')'
+    )),
+    subscript_expression: $ => prec(1, seq(
+      field('argument', $.expression),
+      '[',
+      field('index', $.expression),
+      ']'
+    )),
+    field_expression: $ => prec(1, seq(
+      field('argument', $.expression),
+      choice('.', '->'),
+      field('field', $.identifier)
+    )),
+    unary_expression: $ => prec.right(2, seq(
+      choice('*', '&', '!', '-', '~'),
+      $.expression
+    )),
+    binary_expression: $ => prec.left(1, seq(
+      $.expression,
+      choice('+', '-', '*', '/', '%', '==', '!=', '>', '<', '>=', '<=', '&&', '||', '&', '|', '^'),
+      $.expression
+    )),
+    assignment_expression: $ => prec.right(0, seq(
+      $.expression,
+      choice('=', '+=', '-='),
+      $.expression
+    )),
     
   }
 });   // TODO:  improve fields maked 'simple' (VAR STUB etc.)

@@ -1,25 +1,28 @@
-(var_instruction) @indent
+; "Start indenting AFTER this node's start"
+[ 
+  (element_block)
+  (service_block)
+  (test_block)
+  (define_stub_block)
+  (environment_block)
+  (init_block)
+  (termination_block)
+  (ifelse_block)
+  (simul_block)
+] @indent.begin
 
-; Main blocks
-(element_block) @indent
-(service_block) @indent
-(test_block) @indent
+; dedent ME, but keep children indented" 
+[
+"ELSE"
+"ELSE_SIMUL"
+] @indent.branch
 
-; Code blocks
-(define_stub_block) @indent
-(environment_block) @indent
-(init_block) @indent
-(termination_block) @indent
+; dedent ME and everything after"
+[
+  "END"
+] @indent.dedent
 
-; Conditional blocks
-(ifelse_block) @indent
-(simul_block) @indent
+(native_code) @indent.auto
 
-; Ends of blocks
-"END" @dedent
-"ELSE" @dedent
-"ELSE_SIMUL" @dedent
-
-((element_block) @indent)
-
-;; TODO: not working
+(other_comment_instruction) @indent.auto
+(comment_instruction) @indent.auto
