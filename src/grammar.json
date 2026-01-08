@@ -1658,7 +1658,7 @@
               "members": [
                 {
                   "type": "SYMBOL",
-                  "name": "_stub_parameter"
+                  "name": "stub_parameter"
                 },
                 {
                   "type": "REPEAT",
@@ -1671,7 +1671,7 @@
                       },
                       {
                         "type": "SYMBOL",
-                        "name": "_stub_parameter"
+                        "name": "stub_parameter"
                       }
                     ]
                   }
@@ -1689,7 +1689,7 @@
         }
       ]
     },
-    "_stub_parameter": {
+    "stub_parameter": {
       "type": "SEQ",
       "members": [
         {

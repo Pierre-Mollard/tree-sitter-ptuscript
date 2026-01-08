@@ -344,10 +344,10 @@ module.exports = grammar({
       optional(field('type', $.expression)),
       field('function', $.expression),
       '(',
-      optional(comma_sep($._stub_parameter)),
+      optional(comma_sep($.stub_parameter)),
       ')'
     ),
-    _stub_parameter: $ => seq(
+    stub_parameter: $ => seq(
       optional(field('type', $.expression)),
       optional(field('mode', choice(
         alias('_in', $.mode_in),
